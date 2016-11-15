@@ -1,4 +1,4 @@
-s.census <- select(census, evanrate, bprtrate, cathrate, ldsrate, orthrate, mprtrate )
+s.census <- select(census, evanrate, bprtrate, cathrate, ldsrate, orthrate, mprtrate)
 s.census[is.na(s.census)]<- 0
 s.census$max <- apply(s.census, 1, max)
 
@@ -49,6 +49,18 @@ my_theme <- function() {
 }
 
 ggplot(trump, aes(x=test, y=pct))+
+  my_theme()+
+  geom_point(shape=1) +
+  geom_smooth()+
+  labs(title= "", y="Trump Vote Share", x="Religious Diversity")+
+  ggtitle(expression(atop(bold("Trump and Religious Diversity"), atop(italic("Higher Values = More Diversity"),""))))+
+  theme(plot.title = element_text(size = 16, face = "bold", colour = "black", vjust = 0.5, hjust=0.5))
+
+
+
+div_filter <- filter(trump, test >= .35)
+
+ggplot(div_filter, aes(x=test, y=pct))+
   my_theme()+
   geom_point(shape=1) +
   geom_smooth()+
