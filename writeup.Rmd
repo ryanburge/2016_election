@@ -234,6 +234,8 @@ Trump's win was a long shot. Every serious modeler put his changes at least than
 
 Obviously there are many more angles to analysis here. Age, changes in employment, racial diversity, etc. But this is a start toward understanding how Trump pulled this election off. 
 
+For the full syntax and data to do this analysis, [check out my github repository](https://github.com/ryanburge/2016_election)
+
 
 
 
