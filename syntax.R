@@ -4,6 +4,8 @@ library(dplyr)
 library(foreign)
 library(gridExtra)
 library(RColorBrewer)
+library(choroplethr)
+library(choroplethrMaps)
 
 vote <- read.csv("pres16results.csv", stringsAsFactors = FALSE)
 
@@ -27,7 +29,7 @@ poverty <- read.csv("povertyus.csv", stringsAsFactors = FALSE)
 
 poverty <- select(poverty, fips, poverty)
 
-merge <- merge(merge, poverty, by=c("fips"))
+merge <- merge(cmerge, poverty, by=c("fips"))
 
 educ <- read.csv("educ.csv", stringsAsFactors = FALSE)
 
@@ -78,7 +80,7 @@ my_theme <- function() {
 trump$diff <- trump$pct - clinton$pct
 ggplot(trump, aes(x=poverty, y=pct))+
   my_theme()+
-  geom_point(shape=1) +
+  geom_point(shape=1, size ) +
   geom_smooth()+
   labs(title= "", y="Trump Vote Share", x="Poverty Rate")+
   ggtitle(expression(atop(bold("Trump and Poverty"), atop(italic("Association between Trump Vote Share and Poverty Rate"),""))))+
@@ -107,7 +109,7 @@ trump$value <- trump$poverty
 palette_rev <- rev(brewer.pal(8, "RdBu"))
 
 choro = CountyChoropleth$new(trump)
-choro$title = "Trump Vote Share"
+choro$title = "Poverty Rate by County"
 
 choro$set_num_colors(1)
 
