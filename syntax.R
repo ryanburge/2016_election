@@ -1,12 +1,14 @@
-
+       
 library(ggplot2)
 library(dplyr)
 library(foreign)
 library(gridExtra)
+library(RColorBrewer)
 
-vote <- read.csv("C:/pres16results.csv", stringsAsFactors = FALSE)
+vote <- read.csv("pres16results.csv", stringsAsFactors = FALSE)
 
-census <- read.dta("C:/relcensus.dta", convert.factors = FALSE)
+census <- read.dta("relcensus.dta", convert.factors = FALSE)
+
 
 #census <- read.csv("C:/trump_elect/cenfix.csv", stringsAsFactors = FALSE)
 
@@ -20,6 +22,18 @@ vote$fips <- gsub("(?<![0-9])0+", "", vote$fips, perl = TRUE)
 
 
 merge <- merge(census, vote, by=c("fips"))
+
+poverty <- read.csv("povertyus.csv", stringsAsFactors = FALSE)
+
+poverty <- select(poverty, fips, poverty)
+
+merge <- merge(merge, poverty, by=c("fips"))
+
+educ <- read.csv("educ.csv", stringsAsFactors = FALSE)
+
+merge <-merge(merge, educ, by=c("fips"))
+
+clean <- select(merge, fips, evanrate.x, stname.x, cathrate.x, cand_name, votes, total, state, pct, poverty, hsonly, ba.above)
 
 pres <- filter(merge, cand_name == "Donald Trump" | cand_name == "Hillary Clinton")
 
@@ -62,12 +76,12 @@ my_theme <- function() {
 
 
 trump$diff <- trump$pct - clinton$pct
-ggplot(trump, aes(x=cathrate, y=pct))+
+ggplot(trump, aes(x=poverty, y=pct))+
   my_theme()+
   geom_point(shape=1) +
   geom_smooth()+
-  labs(title= "", y="Trump Vote Share", x="Evangelical Adherence Rate")+
-  ggtitle(expression(atop(bold("Trump and Evangelicals"), atop(italic("Association between Trump Vote Share and Evangelical Adherence"),""))))+
+  labs(title= "", y="Trump Vote Share", x="Poverty Rate")+
+  ggtitle(expression(atop(bold("Trump and Poverty"), atop(italic("Association between Trump Vote Share and Poverty Rate"),""))))+
   theme(plot.title = element_text(size = 16, face = "bold", colour = "black", vjust = 0.5, hjust=0.5))
 
 
@@ -89,7 +103,7 @@ choro$render()
 
 
 trump$region <- trump$fips
-trump$value <- trump$evanrate
+trump$value <- trump$poverty
 palette_rev <- rev(brewer.pal(8, "RdBu"))
 
 choro = CountyChoropleth$new(trump)
