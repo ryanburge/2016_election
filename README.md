@@ -8,4 +8,6 @@ The full writeup can be  [found here](https://ryanburge.github.io/blog/Election-
 
 ![alt tag](https://raw.githubusercontent.com/ryanburge/2016_election/master/map.png)
 
+![alt tag](https://ryanburge.github.io/figs/writeup/unnamed-chunk-12-1.png)
+
 ![alt tag](https://raw.githubusercontent.com/ryanburge/2016_election/master/rel_diversity.png)
