@@ -28,9 +28,9 @@ Donald Trump won the Presidency. How? It's still very early to do a lot of analy
 ### Let's Just Map
 
 ```{r message=FALSE, warning=FALSE}
-vote <- read.csv("pres16results.csv", stringsAsFactors = FALSE)
+vote <- read.csv("D:/2016_election/pres16results.csv", stringsAsFactors = FALSE)
 vote$fips <- gsub("(?<![0-9])0+", "", vote$fips, perl = TRUE)
-census <- read.dta("relcensus.dta", convert.factors = FALSE)
+census <- read.dta("D:/2016_election/relcensus.dta", convert.factors = FALSE)
 merge <- merge(census, vote, by=c("fips"))
 pres <- filter(merge, cand_name == "Donald Trump" | cand_name == "Hillary Clinton")
 trump <- filter(merge, cand_name == "Donald Trump")
@@ -58,11 +58,11 @@ Obviously, these maps don't tell the whole story. Our eye equates size with impo
 ## Demographic Explanations
 
 ```{r message=FALSE, warning=FALSE}
-vote <- read.csv("pres16results.csv", stringsAsFactors = FALSE)
-poverty <- read.csv("povertyus.csv", stringsAsFactors = FALSE)
+vote <- read.csv("D:/2016_election/pres16results.csv", stringsAsFactors = FALSE)
+poverty <- read.csv("D:/2016_election/povertyus.csv", stringsAsFactors = FALSE)
 poverty <- select(poverty, fips, poverty)
 merge <- merge(merge, poverty, by=c("fips"))
-educ <- read.csv("educ.csv", stringsAsFactors = FALSE)
+educ <- read.csv("D:/2016_election/educ.csv", stringsAsFactors = FALSE)
 merge <-merge(merge, educ, by=c("fips"))
 pres <- filter(merge, cand_name == "Donald Trump" | cand_name == "Hillary Clinton")
 trump <- filter(merge, cand_name == "Donald Trump")
@@ -139,8 +139,8 @@ The relationship here is much more linear. Trump did very well in counties with 
 The [U.S. Religious Census](http://www.thearda.com/Archive/Files/Codebooks/RCMSCY10_CB.asp) provides religious demography data at the county level for each county in the United States. I am going to merge that data with the voting data used prior. 
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
-vote <- read.csv("pres16results.csv", stringsAsFactors = FALSE)
-census <- read.dta("relcensus.dta", convert.factors = FALSE)
+vote <- read.csv("D:/2016_election/pres16results.csv", stringsAsFactors = FALSE)
+census <- read.dta("D:/2016_election/relcensus.dta", convert.factors = FALSE)
 census <- select(census, fips, evanrate, stname, cathrate)
 vote$fips <- gsub("(?<![0-9])0+", "", vote$fips, perl = TRUE)
 merge <- merge(census, vote, by=c("fips"))
@@ -178,7 +178,7 @@ Here the relationship is the opposite. More Catholics = less Trump votes. This i
 I wanted to see how religious diversity impacted Trump's support. It took me a while to arrive at an acceptable measure. So, here's what I did: 
 
 ```{r message=FALSE, warning=FALSE}
-census <- read.dta("relcensus.dta", convert.factors = FALSE)
+census <- read.dta("D:/2016_election/relcensus.dta", convert.factors = FALSE)
 s.census <- select(census, evanrate, bprtrate, cathrate, ldsrate, orthrate, mprtrate)
 s.census$jewrate <- census$cjudrate + census$ojudrate + census$rjudrate + census$rfrmrate
 s.census[is.na(s.census)]<- 0
@@ -210,7 +210,7 @@ choro$render()
 This map looks sort of like you would expect it to. Utah has a huge swatch of purple, meaning it has low levels of religious diversity. That makes sense knowing how large the Mormon population is in Utah. Other areas that look homogeneous are significant parts of the south as well as north Texas and the Great Plains. There is a lot of diversity to be found in the west, specifically Washington and Oregon. There is also some diversity through New England even into Ohio and Michigan. 
 
 ```{r message=FALSE, warning=FALSE}
-vote <- read.csv("pres16results.csv", stringsAsFactors = FALSE)
+vote <- read.csv("D:/2016_election/pres16results.csv", stringsAsFactors = FALSE)
 vote$fips <- gsub("(?<![0-9])0+", "", vote$fips, perl = TRUE)
 cmerge <- merge(s.census, vote, by=c("fips"))
 trump <- filter(cmerge, cand_name == "Donald Trump")
