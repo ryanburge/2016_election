@@ -192,5 +192,30 @@ table2 <- table2 %>% rename("Classification" = code, "Trump Vote" = trump_vote, 
 kable(table2)
 ```
 
-
-
+```{r message=FALSE, warning=FALSE, echo= FALSE}
+vote <- read.csv("D:/2016_election/pres16results.csv", stringsAsFactors = FALSE)
+vote$fips <- gsub("(?<![0-9])0+", "", vote$fips, perl = TRUE)
+pres12 <- read.csv("twelve.csv", stringsAsFactors = FALSE)
+trump <- filter(vote, cand_name == "Donald Trump")
+pres12$fips <- pres12$FIPS
+pres12$FIPS <- NULL
+merge <- merge(trump, pres12, by=c("fips"))
+census <- read.dta("D:/2016_election/relcensus.dta", convert.factors = FALSE)
+census <- select(census, fips, evanrate, POP2010)
+merge <- merge(census, merge, by=c("fips"))
+#merge <- select(merge, fips, evanrate, pct, romneypct)
+merge$romneypct <- as.numeric(merge$romneypct)
+merge <- merge %>% mutate(trumppct = pct*100)
+```
+## How Did Trump's Margins Compare to Romney's in 2012? 
+```{r message=FALSE, warning=FALSE}
+a1<- merge %>% filter(evanrate >250) %>% summarise(mean_trump = mean(trumppct), mean_romney = mean(romneypct))
+a2<- merge %>% filter(evanrate >500) %>% summarise(mean_trump = mean(trumppct), mean_romney = mean(romneypct))
+a3<- merge %>% filter(evanrate >250 & POP2010 <25000) %>% summarise(mean_trump = mean(trumppct), mean_romney = mean(romneypct))
+a4<- merge %>% filter(evanrate >500 & POP2010 <25000) %>% summarise(mean_trump = mean(trumppct), mean_romney = mean(romneypct))
+a5 <- rbind(a1, a2, a3, a4)
+a5$trump_advantage <- a5$mean_trump - a5$mean_romney
+a5$description <- c("25%+ Evangelical", "50%+ Evangelical", "25%+ Evangelical and Population < 25000", "50%+ Evangelical and Population < 25000")
+table3 <- a5 %>% rename("Trump Vote Share" = mean_trump, "Romney Vote Share" = mean_romney, "Trump's Margin over Romney" = trump_advantage, "Description" = description)
+kable(table3)
+```
