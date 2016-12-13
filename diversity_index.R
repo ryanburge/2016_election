@@ -68,4 +68,17 @@ ggplot(div_filter, aes(x=test, y=pct))+
   ggtitle(expression(atop(bold("Trump and Religious Diversity"), atop(italic("Higher Values = More Diversity"),""))))+
   theme(plot.title = element_text(size = 16, face = "bold", colour = "black", vjust = 0.5, hjust=0.5))
 
+census <- read.dta("D:/2016_election/relcensus.dta", convert.factors = FALSE)
+s.census <- select(census, evanrate, bprtrate, cathrate, ldsrate, orthrate, mprtrate)
+s.census$jewrate <- census$cjudrate + census$ojudrate + census$rjudrate + census$rfrmrate
+s.census[is.na(s.census)]<- 0
+s.census$fips <- census$fips
+s.census$index <- s.census$evanrate^2 + s.census$bprtrate^2 + s.census$cathrate^2 + s.census$ldsrate^2 + s.census$orthrate^2 + s.census$mprtrate^2 + s.census$jewrate^2
+s.census$index <- s.census$index * .01
+s.census <- filter(s.census, index <= 10000)
+s.census$index <- 10000 - s.census$index
+
+
+
+
 
