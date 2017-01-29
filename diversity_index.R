@@ -49,12 +49,11 @@ my_theme <- function() {
 }
 
 ggplot(trump, aes(x=test, y=pct))+
-  my_theme()+
   geom_point(shape=1) +
   geom_smooth()+
-  labs(title= "", y="Trump Vote Share", x="Religious Diversity")+
-  ggtitle(expression(atop(bold("Trump and Religious Diversity"), atop(italic("Higher Values = More Diversity"),""))))+
-  theme(plot.title = element_text(size = 16, face = "bold", colour = "black", vjust = 0.5, hjust=0.5))
+  labs(title= "", y="Trump Vote Share", x="Religious Diversity (Higher Values = More Diverse)")  + 
+  annotate("text", x = .1, y = .05, label = "religioninpublic.blog", size = 5) + 
+  theme(text=element_text(size=16, family="KerkisSans"))
 
 
 
@@ -68,6 +67,24 @@ ggplot(div_filter, aes(x=test, y=pct))+
   ggtitle(expression(atop(bold("Trump and Religious Diversity"), atop(italic("Higher Values = More Diversity"),""))))+
   theme(plot.title = element_text(size = 16, face = "bold", colour = "black", vjust = 0.5, hjust=0.5))
 
+
+
+
+trump$region <- trump$fips
+trump$value <- trump$test
+palette_rev <- rev(brewer.pal(8, "RdBu"))
+
+choro = CountyChoropleth$new(trump)
+choro$title = "                                             Religious Diversity Index"
+choro$set_num_colors(1)
+choro$ggplot_polygon = geom_polygon(aes(fill = value), color = NA)
+choro$ggplot_scale = scale_fill_gradientn(name = "Diversity Index", colours = viridis(32))
+choro$render()
+
+
+
+
+
 census <- read.dta("D:/2016_election/relcensus.dta", convert.factors = FALSE)
 s.census <- select(census, evanrate, bprtrate, cathrate, ldsrate, orthrate, mprtrate)
 s.census$jewrate <- census$cjudrate + census$ojudrate + census$rjudrate + census$rfrmrate
@@ -77,8 +94,4 @@ s.census$index <- s.census$evanrate^2 + s.census$bprtrate^2 + s.census$cathrate^
 s.census$index <- s.census$index * .01
 s.census <- filter(s.census, index <= 10000)
 s.census$index <- 10000 - s.census$index
-
-
-
-
 
